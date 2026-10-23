@@ -7,7 +7,7 @@
     "architecture": {
         "64bit": {
             "url": "https://github.com/mbackschat/locmetry/releases/download/v0.10.0/locmetry-v0.10.0-x86_64-pc-windows-msvc.zip",
-            "hash": "5613b0da723778774907c3848304f686d36b78a257945f928afe48b9978f9150",
+            "hash": "190271a1f18985d1e62df2d24c35187e1b5c7503c896cb91ed1848c790ab1b82",
             "extract_dir": "locmetry-v0.10.0-x86_64-pc-windows-msvc"
         }
     },
