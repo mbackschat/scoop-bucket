@@ -1,0 +1,27 @@
+{
+    "version": "0.10.0",
+    "description": "Measure source code by language, folder, and purpose",
+    "homepage": "https://github.com/mbackschat/locmetry",
+    "license": "MIT",
+    "notes": "compare-locmetry-files.sh is in $dir and needs Bash and jq.",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/mbackschat/locmetry/releases/download/v0.10.0/locmetry-v0.10.0-x86_64-pc-windows-msvc.zip",
+            "hash": "5613b0da723778774907c3848304f686d36b78a257945f928afe48b9978f9150",
+            "extract_dir": "locmetry-v0.10.0-x86_64-pc-windows-msvc"
+        }
+    },
+    "bin": "locmetry.exe",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/mbackschat/locmetry/releases/download/v$version/locmetry-v$version-x86_64-pc-windows-msvc.zip",
+                "extract_dir": "locmetry-v$version-x86_64-pc-windows-msvc"
+            }
+        },
+        "hash": {
+            "url": "$baseurl/SHA256SUMS"
+        }
+    }
+}
