@@ -16,14 +16,8 @@
                 "114082b5d75c7755835b10b1c445c211db11188fdbeb6b8402f1d6d047f55cf5",
                 "550a21a17fe4b5efeb47844a6e2b1cedd04448d27504dca654b60f5c8a0602ed"
             ],
-            "extract_dir": [
-                "",
-                "a12-dmtool-releases-585c33f0eccbe2c5c7b0500cf7bfc4b87ad77f7e"
-            ],
-            "extract_to": [
-                "",
-                "_notices"
-            ]
+            "extract_dir": "a12-dmtool-releases-585c33f0eccbe2c5c7b0500cf7bfc4b87ad77f7e",
+            "extract_to": "_notices"
         }
     },
     "pre_install": [
