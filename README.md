@@ -6,6 +6,19 @@ Add the bucket once:
 scoop bucket add mbackschat https://github.com/mbackschat/scoop-bucket
 ```
 
+## dmtool
+
+[dmtool](https://github.com/mbackschat/a12-dmtool-releases) inspects, validates, and edits A12 DocumentModels. Requires Windows x64; no JVM is required.
+
+```powershell
+scoop install mbackschat/dmtool
+dmtool --version
+```
+
+Update with `scoop update` and `scoop update dmtool`. Scoop verifies the binary and notice archive checksums. The EUPL-1.2 bundle notices are installed under `share/dmtool` inside `scoop prefix dmtool`.
+
+Maintainers generate [the manifest](bucket/dmtool.json) with `scripts/run-typescript.sh "dmtool packages" scripts/typescript/dmtool-packages.ts VERSION build/packages` in the dmtool source repository after publication. The [Windows workflow](.github/workflows/dmtool.yml) verifies installation, the command shim, version and manifest, notice retention, execution without Java, and uninstallation. Run it on a staging branch before updating main. Updates are maintainer-generated; `checkver` detects releases but does not publish manifest updates.
+
 ## locmetry
 
 [locmetry](https://github.com/mbackschat/locmetry) measures lines of code with embedded Tokei and classifies every file as production, test or other by reviewable project rules.

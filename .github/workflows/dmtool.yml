@@ -1,0 +1,55 @@
+name: Test dmtool installation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - bucket/dmtool.json
+      - .github/workflows/dmtool.yml
+  pull_request:
+    paths:
+      - bucket/dmtool.json
+      - .github/workflows/dmtool.yml
+permissions:
+  contents: read
+jobs:
+  install:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Scoop
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Invoke-WebRequest https://raw.githubusercontent.com/ScoopInstaller/Install/1e2f334083d609986d8c8bc9e31ae8e87c39fab4/install.ps1 -OutFile "$env:RUNNER_TEMP/install-scoop.ps1"
+          & "$env:RUNNER_TEMP/install-scoop.ps1" -RunAsAdmin
+          if ($LASTEXITCODE -ne 0) { throw 'Scoop installation failed' }
+      - name: Install and exercise the package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:PATH = "$HOME/scoop/shims;$env:PATH"
+          scoop install ./bucket/dmtool.json
+          if ($LASTEXITCODE -ne 0) { throw 'dmtool installation failed' }
+          $expected = (Get-Content ./bucket/dmtool.json -Raw | ConvertFrom-Json).version
+          $version = (dmtool --version | Select-Object -First 1)
+          if ($LASTEXITCODE -ne 0 -or $version -notmatch "^a12-dmkits $([regex]::Escape($expected))\b") { throw "Wrong installed version: $version" }
+          $json = dmtool manifest
+          if ($LASTEXITCODE -ne 0) { throw 'Manifest command failed' }
+          if (($json | ConvertFrom-Json).version.rulekit -ne $expected) { throw 'Manifest version mismatch' }
+          $prefix = scoop prefix dmtool
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot locate installed package' }
+          foreach ($name in @('LICENSE', 'KERNEL-LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES', 'licenses/EUPL-1.2.txt', 'licenses/Apache-2.0.txt', 'licenses/BSD-3-Clause.txt', 'licenses/MIT.txt')) {
+            $notice = Join-Path $prefix "share/dmtool/$name"
+            if (!(Test-Path -LiteralPath $notice -PathType Leaf) -or (Get-Item -LiteralPath $notice).Length -eq 0) { throw "Missing notice: $name" }
+          }
+          if (Test-Path (Join-Path $prefix '_notices')) { throw 'Temporary notice archive tree was not removed' }
+          $originalPath = $env:PATH
+          try {
+            $env:PATH = ''
+            $env:JAVA_HOME = 'C:\nonexistent'
+            & (Join-Path $prefix 'dmtool-windows-x64.exe') --version
+            if ($LASTEXITCODE -ne 0) { throw 'Native executable requires an external runtime' }
+          } finally { $env:PATH = $originalPath }
+          scoop uninstall dmtool
+          if ($LASTEXITCODE -ne 0) { throw 'Uninstall failed' }
